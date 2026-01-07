@@ -68,7 +68,6 @@ class TaskController extends Controller
     }
     public function updateStatus(UpdateTaskStatusRequest $request, Task $task)
     {
-        $this->authorize('updateStatus', $task);
 
         if (!$request->user()->isManager() && $task->assigned_to !== $request->user()->id) 
         {

@@ -48,18 +48,6 @@ class TaskService
             ]);
         }
 
-        //prevent making cycle or circle of dependencies
-        // Task A → Task B → Task C 
-        // this not accepted Task A → Task C → Task B → Task A
-        $wouldCreateCycle = Task::query()->whereIn('id', $dependencyIds)->whereHas('dependencies', fn($q) => $q->where('tasks.id', $task->id))->exists();
-
-        if ($wouldCreateCycle) 
-        {
-            throw ValidationException::withMessages([
-                'dependency_task_ids' => ['Dependency cycle detected.'],
-            ]);
-        }
-
         return $this->tasks->syncDependencies($task, $dependencyIds);
     }
 }
